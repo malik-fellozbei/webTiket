@@ -1,6 +1,5 @@
 <nav class="bg-transparent fixed w-full z-30 top-0 start-0 text-white transition-all duration-300 ease-in-out" id="navbar">
     <div class="max-w-7xl flex items-center justify-between mx-auto px-8 py-8">
-        <!-- Logo - Fixed Position -->
         <a href="{{ route('home') }}" class="text-3xl font-extrabold inline-flex items-center">
             <svg class="h-8 w-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h4l2 2v15m4-15v15l2-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-4l-2-2V9m0 0V3m0 0h-4M9 3h4m0 0h-4m0 0v6m0 0h4m-4 0v6m0 0h4"></path>
@@ -8,22 +7,22 @@
             KLEvent
         </a>
 
-        <!-- Desktop Menu & Mobile Button Container -->
         <div class="flex items-center">
-            <!-- Desktop Menu -->
             <div class="hidden md:flex md:items-center md:space-x-8 md:pr-8">
                 <ul class="flex space-x-8 font-medium">
+                    {{-- Mengganti request()->routeIs() menjadi request()->is() --}}
                     <li>
-                        <a href="{{ route('home') }}" class="text-white hover:text-blue-400 transition-colors" aria-current="page">Home</a>
+                        <a href="{{ route('home') }}" class="transition-colors @if(request()->is('/')) text-indigo-500 font-bold @else text-white hover:text-blue-400 @endif" @if(request()->is('/')) aria-current="page" @endif>Home</a>
                     </li>
                     <li>
-                        <a href="{{ route('blog') }}" class="text-white hover:text-blue-400 transition-colors">Blog</a>
+                        {{-- Menggunakan wildcard (*) agar sub-halaman juga terhitung aktif --}}
+                        <a href="{{ route('blog') }}" class="transition-colors @if(request()->is('blog*')) text-indigo-500 font-bold @else text-white hover:text-blue-400 @endif" @if(request()->is('blog*')) aria-current="page" @endif>Blog</a>
                     </li>
                     <li>
-                        <a href="{{ route('event') }}" class="text-white hover:text-blue-400 transition-colors">Event</a>
+                        <a href="{{ route('event') }}" class="transition-colors @if(request()->is('event*')) text-indigo-500 font-bold @else text-white hover:text-blue-400 @endif" @if(request()->is('event*')) aria-current="page" @endif>Event</a>
                     </li>
                     <li>
-                        <a href="{{ route('myticket') }}" class="text-white hover:text-blue-400 transition-colors">My Ticket</a>
+                        <a href="{{ route('myticket') }}" class="transition-colors @if(request()->is('myticket*')) text-indigo-500 font-bold @else text-white hover:text-blue-400 @endif" @if(request()->is('myticket*')) aria-current="page" @endif>My Ticket</a>
                     </li>
                 </ul>
             </div>
@@ -51,12 +50,10 @@
             @endauth
 
             @guest
-            <!-- Login Button -->
             <a href="{{ route('login') }}" class="text-white border font-medium hover:bg-black/80 rounded-full text-sm px-7 py-2 text-center hidden md:block">Login</a>
             @endguest
 
 
-            <!-- Mobile Menu Button -->
             <button data-collapse-toggle="navbar-sticky" type="button" class="cursor-pointer inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100/10 focus:outline-none focus:ring-2 focus:ring-gray-200/20 ml-3" aria-controls="navbar-sticky" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
                 <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
@@ -66,22 +63,22 @@
         </div>
     </div>
 
-    <!-- Mobile Dropdown Menu -->
     <div class="hidden md:hidden" id="navbar-sticky">
         <div class="px-8 pt-4 pb-6">
             <div class="bg-black/30 backdrop-blur-sm rounded-lg border border-white/60 shadow-lg">
                 <ul class="flex flex-col p-4 space-y-2 font-medium">
+                    {{-- Kondisi aktif juga diperbarui di menu mobile --}}
                     <li>
-                        <a href="{{ route('home') }}" class="block py-3 px-4 text-white bg-blue-600/30 rounded-lg hover:bg-blue-600/50 transition-colors" aria-current="page">Home</a>
+                        <a href="{{ route('home') }}" class="block py-3 px-4 rounded-lg transition-colors @if(request()->is('/')) bg-indigo-500 text-white @else text-white hover:bg-white/10 @endif" @if(request()->is('/')) aria-current="page" @endif>Home</a>
                     </li>
                     <li>
-                        <a href="{{ route('blog') }}" class="block py-3 px-4 text-white rounded-lg hover:bg-white/10 transition-colors">Blog</a>
+                        <a href="{{ route('blog') }}" class="block py-3 px-4 rounded-lg transition-colors @if(request()->is('blog*')) bg-indigo-500 text-white @else text-white hover:bg-white/10 @endif" @if(request()->is('blog*')) aria-current="page" @endif>Blog</a>
                     </li>
                     <li>
-                        <a href="{{ route('event') }}" class="block py-3 px-4 text-white rounded-lg hover:bg-white/10 transition-colors">Event</a>
+                        <a href="{{ route('event') }}" class="block py-3 px-4 rounded-lg transition-colors @if(request()->is('event*')) bg-indigo-500 text-white @else text-white hover:bg-white/10 @endif" @if(request()->is('event*')) aria-current="page" @endif>Event</a>
                     </li>
                     <li>
-                        <a href="{{ route('myticket') }}" class="block py-3 px-4 text-white rounded-lg hover:bg-white/10 transition-colors">My Ticket</a>
+                        <a href="{{ route('myticket') }}" class="block py-3 px-4 rounded-lg transition-colors @if(request()->is('myticket*')) bg-indigo-500 text-white @else text-white hover:bg-white/10 @endif" @if(request()->is('myticket*')) aria-current="page" @endif>My Ticket</a>
                     </li>
                     @auth
                     <li class="pt-2 border-t border-white/20">
@@ -117,27 +114,21 @@
     </div>
 </nav>
 
-<!-- Scroll Effect Script -->
+{{-- Script JS tetap sama --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const navbar = document.getElementById('navbar');
 
         function handleScroll() {
             if (window.scrollY > 50) {
-                // Scrolled state - add blur background
                 navbar.classList.remove('bg-transparent');
                 navbar.classList.add('bg-black/60', 'backdrop-blur-sm', 'shadow-lg');
             } else {
-                // Top of page - transparent background
                 navbar.classList.add('bg-transparent');
                 navbar.classList.remove('bg-black/60', 'backdrop-blur-sm', 'shadow-lg');
             }
         }
-
-        // Listen for scroll events
         window.addEventListener('scroll', handleScroll);
-
-        // Initial check
         handleScroll();
     });
 

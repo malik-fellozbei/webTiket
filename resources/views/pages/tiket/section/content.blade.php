@@ -6,78 +6,71 @@
 
     <div class="container mx-auto px-4 pb-16 -mt-32 md:-mt-48 relative z-10">
         <h1 class="text-4xl md:text-5xl font-black text-white mb-8">{{ $event->name }}</h1>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+        <form action="{{ route('checkout.store') }}" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            @csrf
+            <input type="hidden" name="cart_data" id="cart-data-input">
+            <input type="hidden" name="event_id" value="{{ $event->id }}">
+
+            {{-- Kolom Kiri: Daftar Tiket --}}
             <div class="lg:col-span-2 space-y-4" id="ticket-list-container">
                 @forelse($tickets as $ticket)
                 <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-ticket-id="{{ $ticket->id }}">
                     <div class="p-6 grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
                         <div class="md:col-span-3">
                             <h3 class="text-xl font-bold text-slate-800">{{ $ticket->name }}</h3>
-                            <div class="text-xs text-slate-500 mt-2 space-y-1">
-                                <p>{{ $event->start_time->format('F d, Y - h:i A') }}</p>
-                                <p>{{ $event->location_name }}, {{ $event->location_city }}</p>
-                            </div>
-                            <a href="#" class="text-xs font-semibold text-purple-600 hover:underline mt-2 inline-block">View Detail</a>
+                            <p class="text-xs text-slate-500 mt-2">{{ $event->start_time->format('F d, Y - h:i A') }}</p>
                         </div>
                         <div class="md:col-span-1 text-left md:text-center">
                             <p class="text-lg font-semibold text-slate-700 currency-price">{{ $ticket->price }}</p>
                         </div>
                         <div class="md:col-span-2 flex justify-start md:justify-end ticket-controls">
                             @if ($ticket->quantity === 0)
-                            <span class="bg-pink-900 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">Tiket Sold Out</span>
+                            <span class="bg-red-600 text-white font-semibold py-2 px-5 rounded-lg">Sold Out</span>
                             @else
-                            <button class="add-to-cart-button bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:shadow-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105">
-                                Tambah
-                            </button>
+                            <button type="button" class="add-to-cart-button bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md">Tambah</button>
                             <div class="quantity-selector hidden flex items-center gap-2">
-                                <button class="decrease-quantity-button w-8 h-8 rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300 transition-transform duration-200 active:scale-90">-</button>
-                                <span class="selected-quantity-display font-bold text-slate-800 w-8 text-center">0</span>
-                                <button class="increase-quantity-button w-8 h-8 rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300 transition-transform duration-200 active:scale-90">+</button>
+                                <button type="button" class="decrease-quantity-button w-8 h-8 rounded-full bg-slate-200">-</button>
+                                <span class="selected-quantity-display font-bold w-8 text-center">0</span>
+                                <button type="button" class="increase-quantity-button w-8 h-8 rounded-full bg-slate-200">+</button>
                             </div>
                             @endif
                         </div>
                     </div>
                 </div>
                 @empty
-                <div class="bg-white rounded-xl shadow-lg p-6 text-center text-slate-500">
-                    Belum ada tiket yang tersedia untuk event ini.
-                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center text-slate-500">Belum ada tiket yang tersedia.</div>
                 @endforelse
             </div>
 
+            {{-- Kolom Kanan: Ringkasan Pesanan --}}
             <div class="lg:col-span-1">
                 <div class="sticky top-24">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h2 class="text-xl font-bold text-slate-800 border-b pb-3 mb-4">Orders</h2>
-                        <div id="selected-tickets-list">
+                        <div id="selected-tickets-list" class="space-y-2">
                             <div class="min-h-[100px] flex items-center justify-center bg-slate-50 rounded-lg p-4 empty-cart-message">
                                 <p class="text-sm text-slate-400">Your selected tickets will show here.</p>
                             </div>
-                            {{-- Selected tickets will be rendered here by JS --}}
                         </div>
                         <div class="mt-4 pt-4 border-t flex justify-between items-center">
                             <span class="text-slate-600 font-medium total-summary-text">Total (0 Ticket)</span>
-                            <span class="font-bold text-2xl text-slate-800 total-price-display">Rp0</span>
+                            <span class="font-bold text-2xl text-slate-800 total-price-display">Rp 0</span>
                         </div>
-                        <a href="{{ route('checkout') }}">
-                            <button id="select-ticket-button" class="cursor-pointer mt-4 w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                Select Ticket
-                            </button>
-                        </a>
+                        <button type="submit" id="select-ticket-button" class="cursor-pointer mt-4 w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Select Ticket
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </section>
+
 <script>
     const initialTicketsData = @json($initialTicketsData);
-
-
     let selectedTicketsState = {};
-
     document.addEventListener('DOMContentLoaded', () => {
-
         initialTicketsData.forEach(ticket => {
             selectedTicketsState[ticket.id] = {
                 id: ticket.id
@@ -88,19 +81,17 @@
             };
         });
 
-
         document.querySelectorAll('.currency-price').forEach(el => {
-            const price = parseFloat(el.textContent);
-            el.textContent = formatCurrency(price);
+            el.textContent = formatCurrency(parseFloat(el.textContent));
         });
 
         setupEventListeners();
         updateOrderSummary();
     });
 
+
     function setupEventListeners() {
         const ticketListContainer = document.getElementById('ticket-list-container');
-
         ticketListContainer.addEventListener('click', (event) => {
             const target = event.target;
             const ticketCard = target.closest('[data-ticket-id]');
@@ -156,7 +147,6 @@
 
     function updateOrderSummary() {
         const selectedTicketsListEl = document.getElementById('selected-tickets-list');
-        const emptyCartMessageEl = selectedTicketsListEl.querySelector('.empty-cart-message');
         const totalSummaryTextEl = document.querySelector('.total-summary-text');
         const totalPriceDisplayEl = document.querySelector('.total-price-display');
         const selectTicketButton = document.getElementById('select-ticket-button');
@@ -182,7 +172,6 @@
             }
         }
 
-
         if (totalQuantity === 0) {
             selectedTicketsListEl.innerHTML = `
                 <div class="min-h-[100px] flex items-center justify-center bg-slate-50 rounded-lg p-4 empty-cart-message">
@@ -195,10 +184,14 @@
             selectTicketButton.disabled = false;
         }
 
-
         totalSummaryTextEl.textContent = `Total (${totalQuantity} Ticket)`;
         totalPriceDisplayEl.textContent = formatCurrency(totalPrice);
     }
+    // Event listener untuk form submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const cartData = Object.values(selectedTicketsState).filter(t => t.selected_quantity > 0);
+        document.getElementById('cart-data-input').value = JSON.stringify(cartData);
+    });
 
     function formatCurrency(amount) {
         return new Intl.NumberFormat('id-ID', {

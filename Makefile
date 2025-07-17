@@ -5,6 +5,9 @@
 #   - jq (untuk mengambil URL Ngrok). Install: 'sudo apt-get install jq'
 #   - sed (biasanya sudah terinstall di Linux/macOS/Git Bash)
 
+# Aktifkan Docker Bake untuk build yang lebih cepat secara default
+export COMPOSE_BAKE=true
+
 # Mencegah konflik dengan file/folder bernama sama
 .PHONY: run stop restart build reset logs shell shell-root artisan composer npm
 
@@ -29,7 +32,7 @@ run:
 	  sleep 2; \
 	  NGROK_URL=$$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.proto=="https") | .public_url'); \
 	  if [ "$$?" -ne 0 ]; then \
-	  	NGROK_URL=""; \
+		NGROK_URL=""; \
 	  fi; \
 	done; \
 	echo "✅ URL Publik Ngrok ditemukan: $$NGROK_URL"; \
@@ -58,7 +61,7 @@ restart: stop run
 
 ## build: Membangun ulang image dan menjalankan kontainer.
 build:
-	@echo "🏗️  Membangun ulang image dan menjalankan layanan..."
+	@echo "🏗️  Membangun ulang image dan menjalankan layanan (menggunakan Bake)..."
 	@docker compose up -d --build --force-recreate
 
 	@echo "⏳ Menunggu Ngrok untuk menyediakan URL publik..."
@@ -67,7 +70,7 @@ build:
 	  sleep 2; \
 	  NGROK_URL=$$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[] | select(.proto=="https") | .public_url'); \
 	  if [ "$$?" -ne 0 ]; then \
-	  	NGROK_URL=""; \
+		NGROK_URL=""; \
 	  fi; \
 	done; \
 	echo "✅ URL Publik Ngrok ditemukan: $$NGROK_URL"; \
@@ -161,4 +164,3 @@ fix-perms:
 help:
 	@echo "Perintah yang tersedia:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
-

@@ -8,7 +8,7 @@
             <div class="w-full md:w-1/2 text-white">
                 <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">Greenday In Jakarta Show Ticket Package</h1>
                 <p class="text-base sm:text-lg mb-6">Get your tickets now for the most anticipated show of the year! Limited seats available.</p>
-                <button class="bg-red-400 text-white text-xs sm:text-sm lg:text-lg font-semibold px-8 py-3 rounded-full hover:bg-red-300 transition duration-300 ease-in-out shadow-lg">
+                <button onclick="location.href='{{ route('event') }}'" class="bg-red-400 text-white text-xs sm:text-sm lg:text-lg font-semibold px-8 py-3 rounded-full hover:bg-red-300 transition duration-300 ease-in-out shadow-lg">
                     BOOK NOW!
                 </button>
             </div>

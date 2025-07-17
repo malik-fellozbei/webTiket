@@ -11,10 +11,10 @@ class ShowEvents extends Component
 {
     
     public $search = '';
-    public $dayType = '';
+    public $time = '';
     public $event_category_id = ''; 
     
-    public $perPage = 6;
+    public $perPage = 9;
 
     public function loadMore()
     {
@@ -38,11 +38,26 @@ class ShowEvents extends Component
         });
 
         
-        $query->when($this->dayType, function ($q) {
-            if ($this->dayType === 'weekdays') {
-                $q->whereRaw('DAYOFWEEK(start_time) BETWEEN 2 AND 6');
-            } elseif ($this->dayType === 'weekends') {
-                $q->whereRaw('DAYOFWEEK(start_time) IN (1, 7)');
+        $query->when($this->time, function ($q) {
+            switch ($this->time) {
+                case 'today':
+                    $q->whereDate('start_time', today());
+                    break;
+                case 'tomorrow':
+                    $q->whereDate('start_time', today()->addDay());
+                    break;
+                case 'this-week':
+                    $q->whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()]);
+                    break;
+                case 'this-month':
+                    $q->whereMonth('start_time', now()->month)->whereYear('start_time', now()->year);
+                    break;
+                case 'this-year':
+                    $q->whereYear('start_time', now()->year);
+                    break;
+                case 'next-year':
+                    $q->whereYear('start_time', now()->addYear()->year);
+                    break;
             }
         });
 

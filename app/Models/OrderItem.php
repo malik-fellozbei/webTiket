@@ -13,10 +13,10 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'event_id',
-        'ticket_id',
         'user_id',
+        'ticket_id',
+        'attendee_id', 
         'ticket_code',
-        'attendee_name',
         'price',
         'is_scanned',
         'scanned_at',
@@ -53,6 +53,14 @@ class OrderItem extends Model
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
+    }
+
+        /**
+     * Relasi: Sebuah OrderItem merujuk ke satu attendee.
+     */
+    public function attendee(): BelongsTo
+    {
+        return $this->belongsTo(Attendee::class);
     }
 
     /**

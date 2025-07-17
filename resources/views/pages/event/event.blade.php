@@ -6,7 +6,7 @@
     <x-navbar />
 
     @include('pages.event.section.hero')
-    @include('pages.event.section.filter')
+    {{-- @include('pages.event.section.filter') --}}
     <livewire:show-events />
 
     <x-footer />

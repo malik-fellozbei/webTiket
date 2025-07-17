@@ -1,9 +1,7 @@
-# Gunakan base image resmi PHP 8.4 FPM
 FROM php:8.4-fpm-alpine
 
 WORKDIR /var/www
 
-# TAMBAHKAN icu-dev di sini
 RUN apk add --no-cache \
     libpng-dev \
     libzip-dev \
@@ -15,23 +13,29 @@ RUN apk add --no-cache \
     libxml2-dev \
     curl \
     git \
-    icu-dev;
+    icu-dev \
+    imagemagick \
+    imagemagick-dev;
 
-# Install ekstensi PHP yang dibutuhkan Laravel
 RUN docker-php-ext-install \
     pdo_mysql \
     mbstring \
     exif \
     pcntl \
     bcmath \
-    gd \
     zip \
     intl;
 
-# Install Composer
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd;
+
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS autoconf build-base \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+    && apk del .build-deps;
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Ganti ke user non-root
 USER www-data
 
 EXPOSE 9000

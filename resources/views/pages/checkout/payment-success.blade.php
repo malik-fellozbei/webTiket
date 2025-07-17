@@ -1,27 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-white p-4">
+<div class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
 
-    @php
-    // ID Tiket ini seharusnya didapat dari proses transaksi
-    $ticketID = 'EVENT-IN-'.strtoupper(bin2hex(random_bytes(6)));
-    @endphp
-
-    <div class="w-full max-w-md rounded-2xl shadow-xl p-8 text-center">
+    <div class="w-full max-w-lg rounded-2xl shadow-xl p-8 text-center bg-white">
         <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGdwajB4YmUzODY3c2FuaWpuMWl0em9sZXpkZDYzdGFjbXlzb250dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ely3apij36BJhoZ234/giphy.gif" alt="Payment Success GIF" class="w-32 h-32 mx-auto mb-4">
 
         <h1 class="text-3xl font-extrabold text-slate-800">Payment Successful!</h1>
         <p class="mt-3 text-slate-600">Thank you! Your transaction has been completed and your e-ticket is now ready.</p>
 
-        <div class="mt-8 bg-slate-50 border border-dashed border-slate-300 rounded-lg p-4">
-            <p class="text-sm text-slate-500">Your Ticket ID</p>
-            <p class="text-lg font-bold text-purple-700 tracking-wider mt-1">{{ $ticketID }}</p>
+        <div class="mt-8 text-left border-t border-b border-slate-200 py-4 space-y-3">
+            <div class="flex justify-between">
+                <span class="text-slate-500">Transaction Code</span>
+                <span class="font-bold text-slate-800">{{ $order->transaction_code }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">Total Tickets</span>
+                <span class="font-bold text-slate-800">{{ $order->items->count() }} Tickets</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">Total Payment</span>
+                <span class="font-bold text-purple-700">IDR {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+            </div>
         </div>
 
+        <div class="mt-6 text-left">
+            <p class="text-slate-500 font-medium mb-3">Ticket Details:</p>
+            <div class="space-y-3">
+                @forelse($ticketSummary as $ticketName => $quantity)
+                <div class="flex items-center bg-slate-50 hover:bg-slate-100 transition-colors duration-200 p-4 rounded-lg">
+                    <div class="flex-shrink-0 mr-4">
+                        <svg width="30px" height="30px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M840.9 100.9L744 866.4c-1.9 15.4-16 26.2-31.3 24.3l-370.2-46.9c-15.4-1.9-26.2-16-24.3-31.3l96.9-765.6c1.9-15.4 16-26.2 31.3-24.3l370.2 46.9c15.4 2 26.2 16 24.3 31.4z" fill="#B6CDEF" />
+                            <path d="M716.2 905.9c-1.8 0-3.7-0.1-5.5-0.3l-370.2-46.9c-11.4-1.4-21.6-7.2-28.6-16.3-7-9.1-10.1-20.4-8.7-31.8L400.1 45c3-23.5 24.6-40.3 48.1-37.3l370.2 46.9c23.5 3 40.3 24.6 37.3 48.1l-96.9 765.6c-1.4 11.4-7.2 21.6-16.3 28.6-7.6 5.9-16.8 9-26.3 9zM442.9 37.4c-6.5 0-12.1 4.8-12.9 11.4l-97 765.6c-0.4 3.5 0.5 6.9 2.6 9.6 2.1 2.8 5.2 4.5 8.7 4.9l370.2 46.9c3.4 0.4 6.9-0.5 9.6-2.6 2.8-2.1 4.5-5.2 4.9-8.7L826 99c0.9-7.1-4.2-13.7-11.3-14.6L444.6 37.5c-0.6 0-1.1-0.1-1.7-0.1z" fill="#0F53A8" />
+                            <path d="M599.8 144.7l88.7 766.6c1.8 15.4-9.2 29.3-24.6 31.1l-370.7 42.9c-15.4 1.8-29.3-9.2-31.1-24.6l-88.7-766.6c-1.8-15.4 9.2-29.3 24.6-31.1l370.7-42.9c15.4-1.8 29.3 9.3 31.1 24.6z" fill="#B6CDEF" />
+                            <path d="M290 1000.5c-21.5 0-40.2-16.2-42.7-38.1l-88.7-766.6c-2.7-23.6 14.2-45 37.8-47.7L567 105.2c23.6-2.7 45 14.2 47.7 37.8l88.7 766.6c2.7 23.6-14.2 45-37.8 47.7l-370.7 42.9c-1.6 0.2-3.3 0.3-4.9 0.3z m281.9-865.6c-0.5 0-1 0-1.5 0.1l-370.7 42.9c-3.5 0.4-6.6 2.1-8.7 4.9s-3.1 6.1-2.7 9.6L277 958.9c0.8 7.1 7.3 12.3 14.4 11.4l370.7-42.9c7.1-0.8 12.3-7.3 11.4-14.4l-88.7-766.6c-0.7-6.6-6.4-11.5-12.9-11.5z" fill="#0F53A8" />
+                            <path d="M482 788.9l10.9 94.1c1.8 15.4-9.2 29.3-24.6 31.1L374.2 925c-15.4 1.8-29.3-9.2-31.1-24.6l-10.9-94.1c-1.8-15.4 9.2-29.3 24.6-31.1l94.1-10.9c15.4-1.8 29.4 9.2 31.1 24.6z" fill="#89B7F5" />
+                            <path d="M370.9 940.2c-21.5 0-40.2-16.2-42.7-38.1L317.3 808c-2.7-23.6 14.2-45 37.8-47.7l94.1-10.9c23.6-2.7 45 14.2 47.7 37.8l10.9 94.1c2.7 23.6-14.2 45-37.8 47.7l-94.1 10.9c-1.7 0.2-3.3 0.3-5 0.3z m83.3-161.1c-0.5 0-1 0-1.5 0.1l-94.1 10.9c-7.1 0.8-12.3 7.3-11.4 14.4l10.9 94.1c0.8 7.1 7.3 12.3 14.4 11.4l94.1-10.9c7.1-0.8 12.3-7.3 11.4-14.4l-10.9-94.1c-0.7-6.6-6.4-11.5-12.9-11.5z" fill="#0F53A8" />
+                            <path d="M328.7 715.3c-7.5 0-14-5.6-14.9-13.3l-28.2-243.6c-1-8.2 4.9-15.7 13.2-16.6 8.2-1 15.7 4.9 16.6 13.2l28.2 243.6c1 8.2-4.9 15.7-13.2 16.6-0.5 0.1-1.1 0.1-1.7 0.1zM393 717.1c-7.5 0-14-5.6-14.9-13.3L340.7 381c-1-8.2 4.9-15.7 13.2-16.6 8.2-1 15.7 4.9 16.6 13.2l37.4 322.8c1 8.2-4.9 15.7-13.2 16.6-0.6 0.1-1.1 0.1-1.7 0.1zM462.3 709.1c-7.5 0-14-5.6-14.9-13.3l-23.3-201c-1-8.2 4.9-15.7 13.2-16.6 8.2-1 15.7 4.9 16.6 13.2l23.3 201c1 8.2-4.9 15.7-13.2 16.6-0.6 0.1-1.2 0.1-1.7 0.1z" fill="#0F53A8" />
+                            <path d="M234.9 250.1c-7.5 0-14-5.6-14.9-13.3-1-8.2 4.9-15.7 13.2-16.6l45.2-5.2c8.2-1 15.7 4.9 16.6 13.2s-4.9 15.7-13.2 16.6l-45.2 5.2c-0.5 0.1-1.1 0.1-1.7 0.1zM324.6 239.8c-7.5 0-14-5.6-14.9-13.3-1-8.2 4.9-15.7 13.2-16.6l45.2-5.2c8.2-1 15.7 4.9 16.6 13.2 1 8.2-4.9 15.7-13.2 16.6l-45.2 5.2c-0.5 0-1.1 0.1-1.7 0.1zM414.3 229.4c-7.5 0-14-5.6-14.9-13.3-1-8.2 4.9-15.7 13.2-16.6l45.2-5.2c8.2-1 15.7 4.9 16.6 13.2 1 8.2-4.9 15.7-13.2 16.6l-45.2 5.2c-0.5 0-1.1 0.1-1.7 0.1zM504 219c-7.5 0-14-5.6-14.9-13.3-1-8.2 4.9-15.7 13.2-16.6l45.2-5.2c8.2-0.9 15.7 4.9 16.6 13.2 1 8.2-4.9 15.7-13.2 16.6l-45.2 5.2c-0.6 0.1-1.1 0.1-1.7 0.1z" fill="#0F53A8" /></svg>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-slate-800">{{ $ticketName }}</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="font-bold text-slate-700 text-lg">x{{ $quantity }}</span>
+                    </div>
+                </div>
+                @empty
+                <div class="bg-slate-50 text-slate-500 text-center p-4 rounded-lg">
+                    No ticket details available.
+                </div>
+                @endforelse
+            </div>
+        </div>
+
+
         <div class="mt-8 space-y-3">
-            <a href="{{ route('myticket') }}" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                View My Ticket
+            <a href="{{route('myticket')}}" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 text-lg rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1">
+                Find My Ticket
             </a>
             <a href="{{ route('home') }}" class="block text-sm text-slate-600 hover:underline">
                 Back to Home
