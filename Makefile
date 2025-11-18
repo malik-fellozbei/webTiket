@@ -25,7 +25,7 @@ s := app
 ## run: Menjalankan semua kontainer, mengupdate .env, dan menampilkan URL publik Ngrok.
 run:
 	@echo "🚀 Menjalankan semua layanan Docker..."
-	@docker compose up -d
+	@DOCKER_BUILDKIT=0 docker compose up -d
 	@echo "⏳ Menunggu Ngrok untuk menyediakan URL publik..."
 	@NGROK_URL=""; \
 	while [ -z "$$NGROK_URL" ]; do \
